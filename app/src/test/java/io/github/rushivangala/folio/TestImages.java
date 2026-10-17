@@ -1,11 +1,6 @@
 package io.github.rushivangala.folio;
 
-import java.awt.image.BufferedImage;
-import java.io.ByteArrayOutputStream;
-
-import javax.imageio.ImageIO;
-
-/** Helpers for tests: synthetic pages and JPEG encoding through the JVM's ImageIO. */
+/** Helpers for tests: synthetic pages and JPEG encoding (TestJpeg). */
 final class TestImages {
     private TestImages() {
     }
@@ -36,20 +31,12 @@ final class TestImages {
         }
     }
 
-    static byte[] jpeg(Img im) throws Exception {
-        BufferedImage b = new BufferedImage(im.w, im.h, BufferedImage.TYPE_INT_RGB);
-        b.setRGB(0, 0, im.w, im.h, im.px, 0, im.w);
-        ByteArrayOutputStream o = new ByteArrayOutputStream();
-        if (!ImageIO.write(b, "jpg", o)) throw new IllegalStateException("no JPEG writer");
-        return o.toByteArray();
+    static byte[] jpeg(Img im) {
+        return TestJpeg.encode(im, false);
     }
 
-    static byte[] jpegGrey(Img im) throws Exception {
-        BufferedImage b = new BufferedImage(im.w, im.h, BufferedImage.TYPE_BYTE_GRAY);
-        for (int y = 0; y < im.h; y++) for (int x = 0; x < im.w; x++) b.setRGB(x, y, im.px[y * im.w + x]);
-        ByteArrayOutputStream o = new ByteArrayOutputStream();
-        if (!ImageIO.write(b, "jpg", o)) throw new IllegalStateException("no JPEG writer");
-        return o.toByteArray();
+    static byte[] jpegGrey(Img im) {
+        return TestJpeg.encode(im, true);
     }
 
     static double meanLuma(Img im, int x0, int y0, int x1, int y1) {
