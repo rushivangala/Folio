@@ -107,6 +107,11 @@ public final class Bridge {
     }
 
     @JavascriptInterface
+    public boolean importing() {
+        return a.importsRunning.get() > 0;
+    }
+
+    @JavascriptInterface
     public String takeLaunch() {
         return a.takeLaunch();
     }

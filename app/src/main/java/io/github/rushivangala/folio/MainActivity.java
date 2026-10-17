@@ -46,6 +46,8 @@ public final class MainActivity extends Activity {
     final ExecutorService work = Executors.newSingleThreadExecutor();
     private final Map<Integer, String> requestTokens = new HashMap<>();
     private volatile String launch;
+    /** Imports still running (the page may load after one finishes and miss its event). */
+    final java.util.concurrent.atomic.AtomicInteger importsRunning = new java.util.concurrent.atomic.AtomicInteger();
 
     @Override
     protected void onCreate(Bundle state) {
@@ -120,33 +122,38 @@ public final class MainActivity extends Activity {
     /** Adds images and PDFs as pages; replies with an "imported" event (token may be null). */
     void importUris(final List<Uri> uris, final String token) {
         final String filter = prefs().getString("p_filter", Filters.AUTO);
+        importsRunning.incrementAndGet();
         work.execute(new Runnable() {
             @Override
             public void run() {
                 int added = 0, failed = 0;
-                Session s = Session.get(MainActivity.this);
-                for (Uri u : uris) {
-                    try {
-                        String mime = getContentResolver().getType(u);
-                        if (mime != null && mime.toLowerCase(Locale.ROOT).equals("application/pdf")) {
-                            final int[] n = {0};
-                            Pix.renderPdf(getContentResolver(), u, new Pix.PageSink() {
-                                @Override
-                                public void page(Bitmap b) throws java.io.IOException {
-                                    s.add(b, filter);
-                                    n[0]++;
-                                }
-                            });
-                            added += n[0];
-                        } else {
-                            Bitmap b = Pix.decode(getContentResolver(), u, Pix.ORIGINAL_MAX);
-                            s.add(b, filter);
-                            b.recycle();
-                            added++;
+                try {
+                    Session s = Session.get(MainActivity.this);
+                    for (Uri u : uris) {
+                        try {
+                            String mime = getContentResolver().getType(u);
+                            if (mime != null && mime.toLowerCase(Locale.ROOT).equals("application/pdf")) {
+                                final int[] n = {0};
+                                Pix.renderPdf(getContentResolver(), u, new Pix.PageSink() {
+                                    @Override
+                                    public void page(Bitmap b) throws java.io.IOException {
+                                        s.add(b, filter);
+                                        n[0]++;
+                                    }
+                                });
+                                added += n[0];
+                            } else {
+                                Bitmap b = Pix.decode(getContentResolver(), u, Pix.ORIGINAL_MAX);
+                                s.add(b, filter);
+                                b.recycle();
+                                added++;
+                            }
+                        } catch (Throwable e) {
+                            failed++;
                         }
-                    } catch (Throwable e) {
-                        failed++;
                     }
+                } finally {
+                    importsRunning.decrementAndGet();
                 }
                 emit("{\"type\":\"imported\",\"added\":" + added + ",\"failed\":" + failed + (token == null ? "" : ",\"token\":" + JSONObject.quote(token)) + "}");
             }
@@ -218,6 +225,7 @@ public final class MainActivity extends Activity {
             emitResult(token, false, "\"cancelled\":true");
             return;
         }
+        emit("{\"type\":\"importing\",\"count\":" + uris.size() + "}");
         importUris(uris, token);
     }
 

@@ -11,13 +11,16 @@ Nothing leaves the phone: the app has no internet permission.
 
 Folio is being built in steps; this list grows as each one lands (see CHANGELOG).
 
-* Library with collections (Receipts, Bills, Letters, ID, Manuals, Notes) and the suite's settings and themes.
+* Import photos of pages and PDFs from Photos, Files or any app's share sheet (**Scan with Folio**).
+* Multi-page scans: reorder (long-press a page and drag), rotate, delete, add more pages.
+* Crop by dragging the four corners, with a magnifier; the page is flattened (perspective corrected).
+* Filters: Auto, Colour, Greyscale, Black & white and Photo. Document filters even out shadows and glare first.
+* Saves one PDF (or one JPEG per page) into Documents/Folio, or a folder you choose. PDFs are written by Folio itself and carry a text layer once text recognition lands.
+* Library with collections (Receipts, Bills, Letters, ID, Manuals, Notes); open, share, rename, move between collections, delete.
 
 Planned for 1.0.0:
 
-* Live camera with page-edge outline and auto-capture; multi-page scans; crop, perspective flattening and filters.
-* Import from Photos, Files and the share sheet ("Scan with Folio").
-* PDFs with an invisible text layer, so any viewer can search and copy; saved to Documents/Folio by default.
+* Live camera with page-edge outline and auto-capture.
 * On-device text recognition in English and Swedish; document type, automatic names, bill and receipt reading.
 * "Pay by" dates become Daybook tasks; search that understands amounts and dates; duplicate warnings.
 * Share with personal numbers, card numbers and signatures redacted; a locked collection for IDs and contracts.
