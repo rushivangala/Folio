@@ -8,6 +8,7 @@
         android:dataExtractionRules="@xml/backup_rules"
         android:enableOnBackInvokedCallback="true"
         android:hardwareAccelerated="true"
+        android:largeHeap="true"
         android:icon="@mipmap/ic_launcher"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:label="@string/app_name"
@@ -23,6 +24,14 @@
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+            <!-- "Scan with Folio" in the share sheet, for images and PDFs. -->
+            <intent-filter android:label="@string/scan_with">
+                <action android:name="android.intent.action.SEND" />
+                <action android:name="android.intent.action.SEND_MULTIPLE" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <data android:mimeType="image/*" />
+                <data android:mimeType="application/pdf" />
             </intent-filter>
         </activity>
     </application>
