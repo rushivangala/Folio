@@ -1,0 +1,27 @@
+/* Folio — app layout on top of the shared kit (kit/kit.css). Colours are kit tokens only. */
+html, body { margin: 0; height: 100%; overflow: hidden; background: var(--bg); }
+button { font: inherit; color: inherit; background: none; border: 0; padding: 0; cursor: pointer; -webkit-tap-highlight-color: transparent; }
+#app { position: fixed; inset: 0; display: flex; flex-direction: column; }
+.screen { flex: 1; min-height: 0; display: flex; flex-direction: column; position: relative; }
+.scroll { flex: 1; min-height: 0; overflow-y: auto; overflow-x: hidden; overscroll-behavior: contain; scrollbar-width: none; padding-left: var(--kit-left); padding-right: var(--kit-right); }
+.scroll::-webkit-scrollbar { display: none; }
+.pad-b { height: calc(120px + var(--kit-bottom)); }
+.k-head .k-icb .k-ic { width: 22px; height: 22px; }
+.k-head.k-small .k-hs { margin-top: 0; }
+.acts { display: flex; gap: 0; margin-right: 4px; }
+.k-fab { bottom: calc(24px + var(--kit-bottom)); }
+
+/* ---------- empty library ---------- */
+.empty { margin: 16px 16px 0; padding: 32px 24px 28px; border-radius: var(--r-sheet); background: var(--low); display: flex; flex-direction: column; align-items: center; text-align: center; gap: 8px; }
+.empty .appic { width: 72px; height: 72px; border-radius: 22px; overflow: hidden; margin-bottom: 8px; }
+.empty .appic svg { width: 72px; height: 72px; display: block; }
+.empty b { font-size: 20px; font-weight: 600; letter-spacing: -.2px; }
+.empty p { margin: 0; color: var(--muted); font-size: 14px; line-height: 20px; max-width: 300px; }
+.hints { margin-top: 12px; }
+
+/* ---------- settings ---------- */
+.pscroll { flex: 1; min-height: 0; overflow-y: auto; padding-bottom: calc(32px + var(--kit-bottom)); scrollbar-width: none; }
+.pscroll::-webkit-scrollbar { display: none; }
+.pscroll .k-group { margin-bottom: 4px; }
+.pscroll .k-row > .k-ic { color: var(--muted); width: 22px; height: 22px; }
+.dot { width: 10px; height: 10px; border-radius: 5px; flex: none; margin: 0 6px; }
