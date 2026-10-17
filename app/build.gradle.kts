@@ -69,6 +69,38 @@ android {
     buildFeatures {
         buildConfig = true
     }
+
+    testOptions {
+        unitTests.all {
+            it.testLogging {
+                events("failed")
+                exceptionFormat = org.gradle.api.tasks.testing.logging.TestExceptionFormat.FULL
+            }
+        }
+    }
+}
+
+dependencies {
+    // JVM unit tests only; nothing here ships in the APK.
+    testImplementation("junit:junit:4.13.2")
+}
+
+// CI only runs assembleRelease, so the unit tests gate it: a failing test fails the build.
+tasks.matching { it.name == "assembleRelease" }.configureEach { dependsOn("testReleaseUnitTest") }
+
+// On GitHub Actions, test results become annotations on the run (readable without the full log).
+if (System.getenv("GITHUB_ACTIONS") == "true") {
+    tasks.withType<Test>().configureEach {
+        afterTest(KotlinClosure2<TestDescriptor, TestResult, Unit>({ d, r ->
+            if (r.resultType == TestResult.ResultType.FAILURE) {
+                val msg = (r.exception?.toString() ?: "failed").replace("%", "%25").replace("\r", "").replace("\n", "%0A")
+                println("::error title=Test failed: ${d.className?.substringAfterLast('.')}.${d.name}::$msg")
+            }
+        }))
+        afterSuite(KotlinClosure2<TestDescriptor, TestResult, Unit>({ d, r ->
+            if (d.parent == null) println("::notice title=Unit tests::${r.testCount} tests, ${r.failedTestCount} failed, ${r.skippedTestCount} skipped")
+        }))
+    }
 }
 
 base {
