@@ -99,6 +99,8 @@ abstract class CheckNoInternet : DefaultTask() {
             )
         }
         report.get().asFile.writeText("OK: no android.permission.INTERNET in ${f.name}\n")
+        // On GitHub Actions this becomes a visible notice on the run, proof that the check ran.
+        if (System.getenv("GITHUB_ACTIONS") == "true") println("::notice title=No internet::Merged release manifest checked: no android.permission.INTERNET")
     }
 }
 
